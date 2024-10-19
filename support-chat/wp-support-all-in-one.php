@@ -3,7 +3,7 @@
  * Plugin Name: Click to Chat - WP Support All-in-One Floating Widget
  * Plugin URI: https://ninjateam.org
  * Description: Allows your customers to click to chat/contact support via Phone Call, WhatsApp, WhatsApp Business, Facebook Messenger, Line, KakaoTalk, Email, and multiple custom apps.
- * Version: 2.3.3
+ * Version: 2.3.4
  * Author: NinjaTeam
  * Author URI: https://ninjateam.org
  * Text Domain: support-chat

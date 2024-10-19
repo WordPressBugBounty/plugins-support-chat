@@ -3,8 +3,8 @@ Contributors: ninjateam
 Donate link: https://ninjateam.org/donation/
 Tags: click to chat, sticky button, whatsapp, contact, sms
 Requires at least: 3.0
-Tested up to: 6.5
-Stable tag: 2.3.3
+Tested up to: 6.6.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,9 @@ You can create a new topic in this WP Support All-in-One Floating Widget's [supp
 4. WP click-to-chat floating button on mobile screen
 
 == Changelog ==
+
+Oct 16, 2024 - Version 2.3.4
+* Fixed: Security
 
 Jun 4, 2024 – Version 2.3.3
 * Updated: Placeholder and examples for each application

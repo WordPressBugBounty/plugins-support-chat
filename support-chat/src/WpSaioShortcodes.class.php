@@ -47,7 +47,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href='https://m.me/<?php echo $urlArray[3]; ?>'></a>
+				<a href='https://m.me/<?php echo esc_attr($urlArray[3]); ?>'></a>
 				<iframe wh-src="fbIframeURL" style="border:none; border-radius: 0 0 16px 16px; overflow:hidden" scrolling="no" allowtransparency="true" src="https://www.facebook.com/plugins/page.php?href=<?php echo esc_url( $url ); ?>&amp;tabs=messages&amp;small_header=true&amp;width=300&amp;height=300&amp;adapt_container_width=true&amp;hide_cover=true&amp;show_facepile=false&amp;appId" width="300" height="300" frameborder="0"></iframe>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -82,8 +82,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="https://api.whatsapp.com/send?phone=<?php echo $phone; ?>" target="_blank">
-					<?php echo $phone; ?>
+				<a href="https://api.whatsapp.com/send?phone=<?php echo esc_attr($phone); ?>" target="_blank">
+					<?php echo esc_attr($phone); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -121,9 +121,9 @@ class WpSaioShortcodes {
 			// echo $username
 			?>
 															"></a> -->
-				<div class="content-snapchat-qrcode" wh-html="snapchatQRCode"><object data="https://feelinsonice-hrd.appspot.com/web/deeplink/snapcode?username=<?php echo $username; ?>&amp;type=PNG" type="image/png" width="200px" height="200px"></object></div>
+				<div class="content-snapchat-qrcode" wh-html="snapchatQRCode"><object data="https://feelinsonice-hrd.appspot.com/web/deeplink/snapcode?username=<?php echo esc_attr($username); ?>&amp;type=PNG" type="image/png" width="200px" height="200px"></object></div>
 				<div style="margin: 5px;" class="content-snapchat-name" wh-html-unsafe="snapchatUser">
-					<a href="https://www.snapchat.com/add/<?php echo $username; ?>" target="_blank"><?php echo $username; ?></a>
+					<a href="https://www.snapchat.com/add/<?php echo esc_attr($username); ?>" target="_blank"><?php echo esc_attr($username); ?></a>
 				</div>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -157,8 +157,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<iframe wh-src="lineIframeURL" scrolling="no" allowtransparency="true" src="<?php echo $url; ?>" frameborder="0"></iframe>
-				<a href="http://line.me/R/ti/p/@<?php echo $url; ?>" target="_blank"></a>
+				<iframe wh-src="lineIframeURL" scrolling="no" allowtransparency="true" src="<?php echo esc_attr($url); ?>" frameborder="0"></iframe>
+				<a href="http://line.me/R/ti/p/@<?php echo esc_attr($url); ?>" target="_blank"></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -189,7 +189,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="http://chats.viber.com/<?php echo $account; ?>" target="_blank"><?php echo $account; ?></a>
+				<a href="http://chats.viber.com/<?php echo esc_attr($account); ?>" target="_blank"><?php echo esc_attr($account); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -220,7 +220,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="tel:<?php echo $phone_number; ?>" target="_blank"><?php echo $phone_number; ?></a>
+				<a href="tel:<?php echo esc_attr($phone_number); ?>" target="_blank"><?php echo esc_attr($phone_number); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -251,7 +251,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="mailto:<?php echo $email; ?>" target="_blank"><?php echo $email; ?></a>
+				<a href="mailto:<?php echo esc_attr($email); ?>" target="_blank"><?php echo esc_attr($email); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -283,8 +283,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="https://t.me/<?php echo $username; ?>" target="_blank">
-				<?php echo $username; ?>
+				<a href="https://t.me/<?php echo esc_attr($username); ?>" target="_blank">
+				<?php echo esc_attr($username); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -317,8 +317,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="skype:<?php echo $username; ?>?chat" target="_blank">
-				<?php echo $username; ?>
+				<a href="skype:<?php echo esc_attr($username); ?>?chat" target="_blank">
+				<?php echo esc_attr($username); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -351,8 +351,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="zalo:<?php echo $username; ?>?chat" target="_blank">
-				<?php echo $username; ?>
+				<a href="zalo:<?php echo esc_attr($username); ?>?chat" target="_blank">
+				<?php echo esc_attr($username); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -385,8 +385,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="kakaotalk:<?php echo $username; ?>?chat" target="_blank">
-				<?php echo $username; ?>
+				<a href="kakaotalk:<?php echo esc_attr($username); ?>?chat" target="_blank">
+				<?php echo esc_attr($username); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -419,7 +419,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="mailto:<?php echo $email; ?>" target="_blank"><?php echo $email; ?></a>
+				<a href="mailto:<?php echo esc_attr($email); ?>" target="_blank"><?php echo esc_attr($email); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
