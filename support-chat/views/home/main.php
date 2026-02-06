@@ -1,6 +1,6 @@
 <?php
-
-$detect = new \WpSaioMobileDetect();
+ if ( ! defined( 'ABSPATH' ) ) exit;
+$is_mobile = wp_is_mobile();
 
 $position = esc_attr(get_option('wpsaio_widget_position', 'right'));
 
@@ -20,7 +20,7 @@ $include_pages = get_option('wpsaio_includes_pages', []);
 
 $exclude_pages = get_option('wpsaio_excludes_pages', []);
 
-if ($detect->isMobile() && !$show_on_mobile || !$detect->isMobile() && !$show_on_desktop || (!$show_on_mobile && !$show_on_desktop)) {
+if ($is_mobile && !$show_on_mobile || !$is_mobile && !$show_on_desktop || (!$show_on_mobile && !$show_on_desktop)) {
     return;
 }
 
@@ -68,13 +68,19 @@ if ($displayCondition === 'includePages') {
 
 ?>
 
-<div id="wp-nt-aio-wrapper" data-bottom="<?php echo $bottom ?>" data-position="<?php echo $position ?>">
+<div id="wp-nt-aio-wrapper" data-bottom="<?php echo esc_attr($bottom); ?>" data-position="<?php echo esc_attr($position); ?>">
     <div class="nt-aio-active js__nt_aio_active" data-icon="<?php echo esc_attr($btn_icon); ?>"></div>
     <!-- /.nt-aio-active js__nt_aio_active -->
     <div class="nt-aio-content">
-        <?php echo $buttons; ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $buttons;
+        ?>
     </div><!-- /.nt-aio-content -->
-    <?php echo $contents; ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $contents;
+        ?>
 </div>
 <style>
 #wp-nt-aio-wrapper {
@@ -99,7 +105,7 @@ if ($displayCondition === 'includePages') {
       <style>
       #wp-nt-aio-wrapper {
           --backgroundIcon: url(<?php echo esc_attr($btn_icon); ?>);
-          --backgroundSize: <?php echo esc_attr($btn_image) === 'cover' ? 'cover' : '60%' ?>;
+          --backgroundSize: <?php echo $btn_image === 'cover' ? 'cover' : '60%' ?>;
         }
       </style>
 <?php }; ?>

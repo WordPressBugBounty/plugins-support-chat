@@ -1,22 +1,11 @@
-
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wrap-content-box">
     <h1>Settings</h1>
-    <div class="notice notice-success settings-error is-dismissible" style="display: none">
-        <div class="wpsaio__popup_notice">
-            <p>
-                <strong>Settings saved.
-                    <button class="notice-dismiss">
-                        <span class="screen-reader-text">Dismiss this notice.</span>
-                    </button>
-                </strong>
-            </p>
-        </div>
-    </div>
     <?php settings_errors(); ?>
     <div id="tabs">
         <ul class="nav-tab-wrapper nta-tab-wrapper">
-            <li><a href="#tabs-1" class="nav-tab nta-design-tab nav-tab-active" data-action="njt_wpsaio_save_design_setting"><?php echo __('Design', 'support-chat') ?></a></li>
-            <li><a href="#tabs-2" class="nav-tab nta-display-setting-tab" data-action="njt_wpsaio_save_display_setting"><?php echo __('Display Settings', 'support-chat') ?></a></li>
+            <li><a href="#tabs-1" class="nav-tab nta-design-tab nav-tab-active" data-action="njt_wpsaio_save_design_setting"><?php echo esc_html__('Design', 'support-chat') ?></a></li>
+            <li><a href="#tabs-2" class="nav-tab nta-display-setting-tab" data-action="njt_wpsaio_save_display_setting"><?php echo esc_html__('Display Settings', 'support-chat') ?></a></li>
         </ul>
         <div class="nta-tabs-content">
             <form method="post" action="options.php">

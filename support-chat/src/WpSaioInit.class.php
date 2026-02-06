@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 class WpSaioInit {
 
 	private static $_instance   = null;
@@ -11,7 +11,7 @@ class WpSaioInit {
 		/*
 		 * Load Text Domain
 		 */
-		add_action( 'plugins_loaded', array( $this, 'loadTextDomain' ) );
+		add_action( 'init', array( $this, 'loadTextDomain' ) );
 
 		/*
 		 * Register Enqueue
@@ -27,7 +27,7 @@ class WpSaioInit {
 		/*
 		 * Admin head
 		 */
-		add_action( 'admin_head', array( $this, 'adminHead' ) );
+		add_action( 'admin_head', array( $this, 'removeAdminNotices' ), 999 );
 
 		/*
 		 * WP Footer
@@ -61,9 +61,9 @@ class WpSaioInit {
 		if ( $hook_suffix !== $this->admin_page_hookfix ) {
 			return;
 		}
-		wp_register_style( 'wp-saio', WP_SAIO_URL . '/assets/admin/css/wp-saio.css' );
-		wp_register_style( 'wp-saio-preview', WP_SAIO_URL . '/assets/home/css/wp-saio.css' );
-		wp_register_style( 'ui-range', WP_SAIO_URL . '/assets/admin/css/ui-range.css' );
+		wp_register_style( 'wp-saio', WP_SAIO_URL . '/assets/admin/css/wp-saio.css', array(), WP_SAIO_VERSION );
+		wp_register_style( 'wp-saio-preview', WP_SAIO_URL . '/assets/home/css/wp-saio.css', array(), WP_SAIO_VERSION );
+		wp_register_style( 'ui-range', WP_SAIO_URL . '/assets/admin/css/ui-range.css', array(), WP_SAIO_VERSION );
 		wp_enqueue_style( 'wp-saio' );
 		wp_enqueue_style( 'wp-saio-preview' );
 		wp_style_add_data( 'wp-saio', 'rtl', 'replace' );
@@ -72,25 +72,130 @@ class WpSaioInit {
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'sortable', WP_SAIO_URL . '/assets/admin/js/Sortable.min.js' );
+		wp_enqueue_script( 'wp-color-picker');
+		wp_enqueue_script( 'sortable', WP_SAIO_URL . '/assets/admin/js/Sortable.min.js', array(), '1.13.0', false );
 
-		wp_register_script( 'wp-saio', WP_SAIO_URL . '/assets/admin/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'wp-color-picker' ) );
+		// Load our React app
+		$asset_file = WP_SAIO_DIR . '/app/build/index.asset.php';
+
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+
+		$asset = include $asset_file;
+		wp_register_script( 'wp-saio', WP_SAIO_URL . '/app/build/index.js', $asset['dependencies'], $asset['version'], true );
 		wp_enqueue_script( 'wp-saio' );
-		wp_register_script( 'wp-saio-preview', WP_SAIO_URL . '/assets/home/js/wp-saio.min.js' );
-		wp_enqueue_script( 'wp-saio-preview' );
+		
+		// wp_register_script( 'wp-saio-preview', WP_SAIO_URL . '/assets/home/js/wp-saio.min.js', array(), WP_SAIO_VERSION, false );
+		// wp_enqueue_script( 'wp-saio-preview' );
 		wp_enqueue_media();
 
 		wp_localize_script(
 			'wp-saio',
 			'wp_saio_object',
 			array(
-				'are_you_sure'          => __( 'Are you sure you want to remove this app. All data will be erase?', 'support-chat' ),
+				'are_you_sure'          => esc_html__( 'Are you sure you want to remove this app. All data will be erase?', 'support-chat' ),
 				'wp_saio_html_inputs'   => json_encode( WpSaio::renderForm() ),
-				'add_media_text_title'  => __( 'Choose Image', 'support-chat' ),
-				'add_media_text_button' => __( 'Choose Image', 'support-chat' ),
+				'add_media_text_title'  => esc_html__( 'Choose Image', 'support-chat' ),
+				'add_media_text_button' => esc_html__( 'Choose Image', 'support-chat' ),
+				'translate'             => array(
+					// Footer texts
+					'footerText'   => esc_html__( 'We need your support to keep updating and improving the plugin. Please,', 'support-chat' ),
+					'reviewLink'   => esc_html__( 'help us by leaving a good review', 'support-chat' ),
+					'thanks'       => esc_html__( 'Thanks!', 'support-chat' ),
+					'thankYouText' => esc_html__( 'Thank you for using Support Chat from NinjaTeam', 'support-chat' ),
+					
+					// Choose Apps Tab
+					'selectAppIcons' => esc_html__( 'Select app icons to add them to your list.', 'support-chat' ),
+					'addNewApp' => esc_html__( 'Add New App', 'support-chat' ),
+					'enterAppTitle' => esc_html__( 'Enter your app title', 'support-chat' ),
+					'uploadIcon' => esc_html__( 'Upload Icon', 'support-chat' ),
+					'yourAppIcon' => esc_html__( 'Your app icon/image', 'support-chat' ),
+					'settingsSavedSuccess' => esc_html__( 'Settings saved successfully!', 'support-chat' ),
+					'errorSavingSettings' => esc_html__( 'Error saving settings. Please try again.', 'support-chat' ),
+					'saving' => esc_html__( 'Saving...', 'support-chat' ),
+					'saveChanges' => esc_html__( 'Save Changes', 'support-chat' ),
+					
+					// Design Tab
+					'settingStyleWidget' => esc_html__( 'Setting style for the floating widget.', 'support-chat' ),
+					'enablePlugin' => esc_html__( 'Enable plugin', 'support-chat' ),
+					'widgetPosition' => esc_html__( 'Widget position', 'support-chat' ),
+					'left' => esc_html__( 'Left', 'support-chat' ),
+					'right' => esc_html__( 'Right', 'support-chat' ),
+					'style' => esc_html__( 'Style', 'support-chat' ),
+					'redirect' => esc_html__( 'Redirect', 'support-chat' ),
+					'popup' => esc_html__( 'Popup', 'support-chat' ),
+					'tooltip' => esc_html__( 'Tooltip', 'support-chat' ),
+					'appName' => esc_html__( 'App Name', 'support-chat' ),
+					'appContent' => esc_html__( 'App Content', 'support-chat' ),
+					'paddingFromBottom' => esc_html__( 'Padding from bottom', 'support-chat' ),
+					'customIconAvatar' => esc_html__( 'Custom icon/avatar', 'support-chat' ),
+					'chooseImage' => esc_html__( 'Choose Image', 'support-chat' ),
+					'buttonStyle' => esc_html__( 'Button style', 'support-chat' ),
+					'contain' => esc_html__( 'Contain', 'support-chat' ),
+					'cover' => esc_html__( 'Cover', 'support-chat' ),
+					'buttonColor' => esc_html__( 'Button color', 'support-chat' ),
+					'designSettingsSavedSuccess' => esc_html__( 'Design settings saved successfully!', 'support-chat' ),
+					'errorSavingDesignSettings' => esc_html__( 'Error saving settings. Please try again.', 'support-chat' ),
+					
+					// Display Tab
+					'settingTextStyleWidget' => esc_html__( 'Setting text and style for the floating widget.', 'support-chat' ),
+					'showOnDesktop' => esc_html__( 'Show on desktop', 'support-chat' ),
+					'showOnMobile' => esc_html__( 'Show on mobile', 'support-chat' ),
+					'display' => esc_html__( 'Display', 'support-chat' ),
+					'showOnAllPages' => esc_html__( 'Show on all pages', 'support-chat' ),
+					'showOnThesePages' => esc_html__( 'Show on these pages...', 'support-chat' ),
+					'hideOnThesePages' => esc_html__( 'Hide on these pages...', 'support-chat' ),
+					'all' => esc_html__( 'All', 'support-chat' ),
+					'displaySettingsSavedSuccess' => esc_html__( 'Display settings saved successfully!', 'support-chat' ),
+					'errorSavingDisplaySettings' => esc_html__( 'Error saving settings. Please try again.', 'support-chat' ),
+					
+					// Tabs
+					'chooseApps' => esc_html__( 'Choose Apps', 'support-chat' ),
+					'design' => esc_html__( 'Design', 'support-chat' ),
+					'display' => esc_html__( 'Display', 'support-chat' ),
+					
+					// App.jsx
+					'doYouNeedHelp' => esc_html__( 'Do you need help?', 'support-chat' ),
+					'thanksUsingNinjaTeam' => __( 'Thanks for using NinjaTeam\'s Products!', 'support-chat' ),
+					'contactSupport' => esc_html__( 'contact support', 'support-chat' ),
+					'rateUs' => esc_html__( 'rate us', 'support-chat' ),
+					'bestWishes' => esc_html__( 'Best wishes,', 'support-chat' ),
+					'kellyFromNinjaTeam' => esc_html__( 'Kelly from NinjaTeam', 'support-chat' ),
+					
+					// Header
+					'clickToChat' => esc_html__( 'Click to Chat', 'support-chat' ),
+					'byNinjaTeam' => esc_html__( 'by NinjaTeam', 'support-chat' ),
+					
+					// Toast messages
+					'close' => esc_html__( 'Close', 'support-chat' ),
+				),
+				'pages'                 => get_pages(),
 				'style'                 => get_option( 'wpsaio_style' ),
 				'ajax_url'              => admin_url( 'admin-ajax.php' ),
 				'nonce'                 => wp_create_nonce( 'wpsaio_nonce' ),
+				'add_icon_text_title'   => esc_html__( 'Choose Icon', 'support-chat' ),
+				'add_icon_text_button'  => esc_html__( 'Choose Icon', 'support-chat' ),
+				'is_reviewed'           => get_option( 'wpsaio_review_tracked', '0' ),
+				'plugin_url'           => WP_SAIO_URL,
+				'enablePlugin'          => get_option( 'wpsaio_enable_plugin', 1 ),
+				'widgetPosition'        => get_option( 'wpsaio_widget_position', 'right' ),
+				'tooltip'               => get_option( 'wpsaio_tooltip', 'appname' ),
+				'bottomDistance'        => get_option( 'wpsaio_bottom_distance', 30 ),
+				'buttonIcon'            => get_option( 'wpsaio_button_icon', '' ),
+				'buttonImage'           => get_option( 'wpsaio_button_image', 'contain' ),
+				'buttonColor'           => get_option( 'wpsaio_button_color', '' ),
+				'showOnDesktop'         => get_option( 'wpsaio_show_on_desktop', 1 ),
+				'showOnMobile'          => get_option( 'wpsaio_show_on_mobile', 1 ),
+				'displayCondition'      => get_option( 'wpsaio_display_condition', 'allPages' ),
+				'includePages'          => get_option( 'wpsaio_includes_pages', array() ),
+				'excludePages'          => get_option( 'wpsaio_excludes_pages', array() ),
+				//choose apps page
+				'page_choose_apps' => [
+					'apps' => WpSaio::defaultAppsWithCustomApps(),
+					'app_order' => WpSaio::addedAppsOrder(),
+				],
+				'plugin_url' => WP_SAIO_URL,
 			)
 		);
 	}
@@ -98,11 +203,11 @@ class WpSaioInit {
 		if ( ! $this->isActivePlugin() ) {
 			return false;
 		}
-		wp_register_style( 'wp-saio', WP_SAIO_URL . '/assets/home/css/wp-saio.css' );
+		wp_register_style( 'wp-saio', WP_SAIO_URL . '/assets/home/css/wp-saio.css', [], WP_SAIO_VERSION );
 		wp_enqueue_style( 'wp-saio' );
 		wp_style_add_data( 'wp-saio', 'rtl', 'replace' );
 
-		wp_register_script( 'wp-saio', WP_SAIO_URL . '/assets/home/js/wp-saio.min.js', array( 'jquery' ) );
+		wp_register_script( 'wp-saio', WP_SAIO_URL . '/assets/home/js/wp-saio.min.js', array( 'jquery' ), WP_SAIO_VERSION, false );
 		wp_enqueue_script( 'wp-saio' );
 
 		wp_localize_script(
@@ -121,35 +226,43 @@ class WpSaioInit {
 		}
 		unload_textdomain( 'support-chat' );
 		load_textdomain( 'support-chat', WP_SAIO_DIR . '/languages/' . $locale . '.mo' );
-		load_plugin_textdomain( 'support-chat', false, WP_SAIO_DIR . '/languages' );
+		// load_plugin_textdomain( 'support-chat', false, WP_SAIO_DIR . '/languages' );
 	}
 	public function registerAdminMenu() {
-		$page_title = __( 'Support Chat All In One', 'support-chat' );
-		$menu_title = __( 'Click to Chat', 'support-chat' );
+		$page_title = esc_html__( 'Support Chat All In One', 'support-chat' );
+		$menu_title = esc_html__( 'Click to Chat', 'support-chat' );
 
 		$this->admin_page_hookfix = add_menu_page( $page_title, $menu_title, 'manage_options', $this->main_menu_slug, array( $this, 'wpSaioMenuCallBack' ), WP_SAIO_URL . '/assets/admin/img/support-icon.svg' );
 	}
-	public function wpsaioLoadMainMenu() {
-		global $plugin_page;
-		$data = array();
-		if ( isset( $_POST['save-wp-saio'] ) && isset( $_POST['data'] ) ) {
-			$_data = WpSaioHelper::sanitize_array( $_POST['data'] );
-			foreach ( $_data as $k => $v ) {
-				$data[ $k ]['params'] = array();
-				foreach ( $v as $k2 => $v2 ) {
-					$data[ $k ]['params'][ $k2 ] = wp_unslash( trim( $v2 ) );
-				}
-			}
-			update_option( 'njt_wp_saio', $data );
+	// public function wpsaioLoadMainMenu() {
+	// 	global $plugin_page;
+	// 	$data = array();
+	// 	if ( isset( $_POST['save-wp-saio'] ) && isset( $_POST['data'] ) ) {
+	// 		$_data = WpSaioHelper::sanitize_array( $_POST['data'] );
+	// 		foreach ( $_data as $k => $v ) {
+	// 			$data[ $k ]['params'] = array();
+	// 			foreach ( $v as $k2 => $v2 ) {
+	// 				$data[ $k ]['params'][ $k2 ] = wp_unslash( trim( $v2 ) );
+	// 			}
+	// 		}
+	// 		update_option( 'njt_wp_saio', $data );
 
-			wp_safe_redirect(
-				esc_url(
-					add_query_arg( array( 'page' => $this->main_menu_slug ), admin_url( 'admin.php' ) )
-				)
-			);
+	// 		wp_safe_redirect(
+	// 			esc_url(
+	// 				add_query_arg( array( 'page' => $this->main_menu_slug ), admin_url( 'admin.php' ) )
+	// 			)
+	// 		);
+	// 	}
+	// }
+	public function removeAdminNotices() {
+		$current_screen = get_current_screen();
+		if( $current_screen->id !== 'toplevel_page_wp-support-all-in-one' ) {
+			return;
 		}
-	}
-	public function adminHead() {
+		remove_all_actions( 'admin_notices' );
+        remove_all_actions( 'all_admin_notices' );
+        remove_all_actions( 'user_admin_notices' );
+        remove_all_actions( 'network_admin_notices' );
 	}
 	public function wpFooter() {
 		if ( ! $this->isActivePlugin() ) {
@@ -165,96 +278,31 @@ class WpSaioInit {
 			'btn_icon'      => $btn_icon,
 			'btn_image'     => $btn_image,
 		);
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo WpSaioView::load( 'home.main', $data );
 	}
 	private function isActivePlugin() {
 		return ( get_option( 'wpsaio_enable_plugin' ) == 1 );
 	}
-
 	public function wpSaioMenuCallBack() {
 		?>
-		<div id="wpsaio" class="wpsaio wp-saio-wrap wrap">
-			<h1><?php _e( 'Support Chat AIO', 'support-chat' ); ?></h1>
-			<div class="notice notice-success settings-error is-dismissible" style="display: none">
-				<div class="wpsaio__popup_notice">
-					<p>
-						<strong>Settings saved.
-							<button class="notice-dismiss">
-								<span class="screen-reader-text">Dismiss this notice.</span>
-							</button>
-						</strong>
-					</p>
-				</div>
-			</div>
-			<div class="wpsaio-row">
-				<div class="wpsaio-col-main">
-					<div class="wp-saio-tab-wrap">
-						<ul class="njt-nav-tabs">
-							<li class="njt-nav-item">
-								<a class="njt-nav-link njt-nav-link-active" href="#saio-apps" data-njt-tab="#saio-apps">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-										<path d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z"></path>
-									</svg>Choose Apps
-								</a>
-							</li>
-							<li class="njt-nav-item">
-								<a class="njt-nav-link" href="#saio-design" data-njt-tab="#saio-design">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-										<path d="M204.3 5C104.9 24.4 24.8 104.3 5.2 203.4c-37 187 131.7 326.4 258.8 306.7 41.2-6.4 61.4-54.6 42.5-91.7-23.1-45.4 9.9-98.4 60.9-98.4h79.7c35.8 0 64.8-29.6 64.9-65.3C511.5 97.1 368.1-26.9 204.3 5zM96 320c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm32-128c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128-64c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 64c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"></path>
-									</svg>Design
-								</a>
-							</li>
-							<li class="njt-nav-item">
-								<a class="njt-nav-link" href="#saio-display" data-njt-tab="#saio-display">
-									<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="desktop" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-desktop fa-w-18 fa-2x">
-										<path fill="currentColor" d="M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z" class=""></path>
-									</svg>Display
-								</a>
-							</li>
-						</ul>
-						<div class="njt-tab-content">
-							<div class="njt-tab-panel njt-tab-active" id="saio-apps">
-								<?php WpSaio::generatePanel(); ?>
-							</div>
-							<div class="njt-tab-panel" id="saio-design">
-								<?php require_once WP_SAIO_DIR . '/views/admin/design-settings.php'; ?>
-							</div>
-							<div class="njt-tab-panel" id="saio-display">
-								<?php require_once WP_SAIO_DIR . '/views/admin/display-settings.php'; ?>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="wpsaio-col-right">
-					<div id="informationdiv" class="wpsaio-postbox">
-						<h3>Do you need help?</h3>
-						<div class="inside">
-							<p>Thanks for using NinjaTeam's Products!</p>
-							<p>If you have any problems or suggestions, please <a href="https://ninjateam.org/support" target="_blank">contact support</a>.</p>
-							<p>Don't forget to <a href="https://wordpress.org/support/plugin/support-chat/reviews/#new-post" target="_blank">rate us</a> if this plugin is helpful for you.</p>
-							<p>Best wishes,
-								<br>
-								Kelly from NinjaTeam
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div id="wpsaio-react-root"></div>
 		<?php
 	}
+	
 	public function wpSaioMenuSettingsCallBack() {
 		wp_enqueue_media();
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo WpSaioView::load( 'admin.settings' );
 	}
 	public function registerSettings() {
-		register_setting( 'wpsaio', 'wpsaio_enable_plugin' );
-		register_setting( 'wpsaio', 'wpsaio_style' );
-		register_setting( 'wpsaio', 'wpsaio_tooltip' );
-		register_setting( 'wpsaio', 'wpsaio_widget_position' );
-		register_setting( 'wpsaio', 'wpsaio_bottom_distance' );
-		register_setting( 'wpsaio', 'wpsaio_button_icon' );
-		register_setting( 'wpsaio', 'wpsaio_button_color' );
+		register_setting( 'wpsaio', 'wpsaio_enable_plugin', array( 'type' => 'boolean', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_style', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_tooltip', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_widget_position', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_bottom_distance', array( 'type' => 'integer', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_button_icon', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ) );
+		register_setting( 'wpsaio', 'wpsaio_button_color', array( 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field' ) );
 	}
 	public static function activate() {
 		$installed = get_option( 'wpsaio_enable_plugin' );

@@ -1,4 +1,5 @@
 <?php
+ if ( ! defined( 'ABSPATH' ) ) exit;
 spl_autoload_register('wp_saio_autoloader');
 function wp_saio_autoloader($class_name)
 {

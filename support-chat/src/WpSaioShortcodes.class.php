@@ -1,9 +1,15 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 class WpSaioShortcodes {
 
 	private static $_instance = null;
 
 	public function __construct() {
+		// Register shortcodes will be done in init hook to avoid early translation calls
+		add_action( 'init', array( $this, 'registerShortcodes' ) );
+	}
+
+	public function registerShortcodes() {
 		$apps = WpSaio::defaultApps();
 		foreach ( $apps as $k => $v ) {
 			if ( isset( $v['shortcode'] ) && ! empty( $v['shortcode'] ) ) {
@@ -38,7 +44,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Messenger', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Messenger', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -47,8 +53,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href='https://m.me/<?php echo esc_attr($urlArray[3]); ?>'></a>
-				<iframe wh-src="fbIframeURL" style="border:none; border-radius: 0 0 16px 16px; overflow:hidden" scrolling="no" allowtransparency="true" src="https://www.facebook.com/plugins/page.php?href=<?php echo esc_url( $url ); ?>&amp;tabs=messages&amp;small_header=true&amp;width=300&amp;height=300&amp;adapt_container_width=true&amp;hide_cover=true&amp;show_facepile=false&amp;appId" width="300" height="300" frameborder="0"></iframe>
+				<a href='<?php echo esc_attr( WpSaioHelper::format_content('messenger', $url, true) ); ?>'></a>
+				<iframe wh-src="fbIframeURL" style="border:none; border-radius: 0 0 16px 16px; overflow:hidden" scrolling="no" allowtransparency="true" src="https://www.facebook.com/plugins/page.php?href=<?php echo esc_url( WpSaioHelper::format_content('messenger', $url, true) ); ?>&amp;tabs=messages&amp;small_header=true&amp;width=300&amp;height=300&amp;adapt_container_width=true&amp;hide_cover=true&amp;show_facepile=false&amp;appId" width="300" height="300" frameborder="0"></iframe>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -65,15 +71,15 @@ class WpSaioShortcodes {
 			$atts
 		);
 		$atts = extract( $atts );
-		preg_match_all( '/\d+/', $phone, $matches );
-		$phone = isset($matches[0][0]) ? $matches[0][0] : '';
+		// preg_match_all( '/\d+/', $phone, $matches );
+		// $phone = isset($matches[0][0]) ? $matches[0][0] : '';
 		?>
 		<div class="nt-aio-popup nt-aio-whatsapp-popup" id="nt-aio-popup-whatsapp">
 			<div class="nt-aio-popup-header">
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'WhatsApp', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'WhatsApp', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -82,8 +88,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="https://api.whatsapp.com/send?phone=<?php echo esc_attr($phone); ?>" target="_blank">
-					<?php echo esc_attr($phone); ?>
+				<a href="https://api.whatsapp.com/send?phone=<?php echo esc_attr( WpSaioHelper::format_content('whatsapp', $phone, false) ); ?>" target="_blank">
+					<?php echo esc_attr( WpSaioHelper::format_content('whatsapp', $phone, false) ); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -107,7 +113,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Snapchat', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Snapchat', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -116,14 +122,9 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<!-- <a href="https://www.snapchat.com/add/
-			<?php
-			// echo $username
-			?>
-															"></a> -->
 				<div class="content-snapchat-qrcode" wh-html="snapchatQRCode"><object data="https://feelinsonice-hrd.appspot.com/web/deeplink/snapcode?username=<?php echo esc_attr($username); ?>&amp;type=PNG" type="image/png" width="200px" height="200px"></object></div>
 				<div style="margin: 5px;" class="content-snapchat-name" wh-html-unsafe="snapchatUser">
-					<a href="https://www.snapchat.com/add/<?php echo esc_attr($username); ?>" target="_blank"><?php echo esc_attr($username); ?></a>
+					<a href="<?php echo esc_attr(WpSaioHelper::format_content('snapchat', $username, true)); ?>" target="_blank"><?php echo esc_html(WpSaioHelper::format_content('snapchat', $username, false)); ?></a>
 				</div>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -141,6 +142,8 @@ class WpSaioShortcodes {
 			$atts
 		);
 		$atts = extract( $atts );
+		//for websites that use http instead of https
+		$url = str_replace('http://', 'https://', $url);
 		?>
 		<div class="nt-aio-popup nt-aio-line-popup" id="nt-aio-popup-line">
 			<!-- <p class="test">Test</p> -->
@@ -148,7 +151,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Line', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Line', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -157,8 +160,10 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<iframe wh-src="lineIframeURL" scrolling="no" allowtransparency="true" src="<?php echo esc_attr($url); ?>" frameborder="0"></iframe>
-				<a href="http://line.me/R/ti/p/@<?php echo esc_attr($url); ?>" target="_blank"></a>
+				<?php if( ! empty( $url ) ) : ?>
+				<iframe wh-src="lineIframeURL" scrolling="no" allowtransparency="true" src="<?php echo esc_url( WpSaioHelper::format_content('line', $url, true) ); ?>" frameborder="0"></iframe>
+				<a href="https://line.me/R/ti/p/@<?php echo esc_url( WpSaioHelper::format_content('line', $url, false) ); ?>" target="_blank"></a>
+				<?php endif; ?>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -180,7 +185,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Viber', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Viber', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -189,7 +194,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="http://chats.viber.com/<?php echo esc_attr($account); ?>" target="_blank"><?php echo esc_attr($account); ?></a>
+				<a href="<?php echo esc_attr( WpSaioHelper::format_content('viber', $account, true) ); ?>" target="_blank"><?php echo esc_attr( WpSaioHelper::format_content('viber', $account, false) ); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -211,7 +216,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Phone', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Phone', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -220,7 +225,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="tel:<?php echo esc_attr($phone_number); ?>" target="_blank"><?php echo esc_attr($phone_number); ?></a>
+				<a href="<?php echo esc_attr(WpSaioHelper::format_content('phone', $phone_number, true)); ?>"><?php echo esc_attr(WpSaioHelper::format_content('phone', $phone_number, false)); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -242,7 +247,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Email', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Email', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -251,7 +256,7 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="mailto:<?php echo esc_attr($email); ?>" target="_blank"><?php echo esc_attr($email); ?></a>
+				<a href="<?php echo esc_attr(WpSaioHelper::format_content('email', $email, true)); ?>" target="_blank"><?php echo esc_attr(WpSaioHelper::format_content('email', $email, false)); ?></a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -274,7 +279,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Telegram', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Telegram', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -283,8 +288,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="https://t.me/<?php echo esc_attr($username); ?>" target="_blank">
-				<?php echo esc_attr($username); ?>
+				<a href="<?php echo esc_attr(WpSaioHelper::format_content('telegram', $username, true)); ?>" target="_blank">
+				<?php echo esc_attr(WpSaioHelper::format_content('telegram', $username, false)); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -308,7 +313,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Skype', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Skype', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -342,7 +347,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Zalo', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Zalo', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -351,8 +356,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="zalo:<?php echo esc_attr($username); ?>?chat" target="_blank">
-				<?php echo esc_attr($username); ?>
+				<a href="<?php echo esc_attr(WpSaioHelper::format_content('zalo', $username, true)); ?>" target="_blank">
+				<?php echo esc_attr(WpSaioHelper::format_content('zalo', $username, false)); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -376,7 +381,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Kakaotalk', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Kakaotalk', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -385,8 +390,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="kakaotalk:<?php echo esc_attr($username); ?>?chat" target="_blank">
-				<?php echo esc_attr($username); ?>
+				<a href="kakaotalk:<?php echo esc_attr(WpSaioHelper::format_content('kakaotalk', $username, false)); ?>?chat" target="_blank">
+				<?php echo esc_attr(WpSaioHelper::format_content('kakaotalk', $username, false)); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
@@ -410,7 +415,7 @@ class WpSaioShortcodes {
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( 'Wechat', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt"><?php esc_html_e( 'Wechat', 'support-chat' ); ?></div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -419,7 +424,9 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="mailto:<?php echo esc_attr($email); ?>" target="_blank"><?php echo esc_attr($email); ?></a>
+				<a href="<?php echo esc_attr(WpSaioHelper::format_content('wechat', $email, true)); ?>" target="_blank">
+					<?php echo esc_attr(WpSaioHelper::format_content('wechat', $email, false)); ?>
+				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->
 		</div>
@@ -435,17 +442,23 @@ class WpSaioShortcodes {
 				'custom-app-title' => '',
 				'url-icon'         => '',
 				'color-icon'       => '',
+				'custom-app-key'   => '',
 			),
 			$atts
 		);
 		// $atts = extract($atts);
 		?>
-		<div class="nt-aio-popup nt-aio-custom-app-popup" id="nt-aio-popup-custom-app">
+		<div class="nt-aio-popup nt-aio-custom-app-popup" id="<?php echo !empty($atts['custom-app-key']) ? 'nt-aio-popup-' . esc_attr($atts['custom-app-key']) : 'nt-aio-popup-custom-app'; ?>">
 			<div class="nt-aio-popup-header">
 				<div class="nt-aio-popup-title">
 					<div class="nt-aio-popup-title-icon"></div>
 					<!-- /.nt-aio-popup-title-icon -->
-					<div class="nt-aio-popup-title-txt"><?php _e( $atts['custom-app-title'] && $atts['custom-app-title'] !== '' ? $atts['custom-app-title'] : 'Custom App', 'support-chat' ); ?></div>
+					<div class="nt-aio-popup-title-txt">
+						<?php
+						$custom_app_title = ($atts['custom-app-title'] && ($atts['custom-app-title'] !== '')) ? $atts['custom-app-title'] : esc_html__('Custom App', 'support-chat');
+						echo esc_html($custom_app_title);
+					?>
+					</div>
 					<!-- /.nt-aio-popup-title-txt -->
 				</div>
 				<!-- /.nt-aio-popup-title -->
@@ -454,8 +467,8 @@ class WpSaioShortcodes {
 			</div>
 			<!-- /.nt-aio-popup-header -->
 			<div class="nt-aio-popup-content">
-				<a href="<?php echo esc_attr( $atts['url'] ); ?>" target="_blank">
-				<?php echo esc_attr( $atts['url'] ); ?>
+				<a href="<?php echo esc_url( $atts['url'] ); ?>" target="_blank">
+				<?php echo esc_url( $atts['url'] ); ?>
 				</a>
 			</div>
 			<!-- /.nt-aio-popup-content -->

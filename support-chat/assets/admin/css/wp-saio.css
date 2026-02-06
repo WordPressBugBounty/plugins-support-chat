@@ -37,3 +37,312 @@
 .wpsaio-app-input-wrap[data-appname="custom-app"] .wpsaio-btn-move {
     display: none;
   }
+
+
+/* Header */
+.wpsaio-top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    background: #fff;
+    border-bottom: 1px solid #e6e8eb;
+    margin: -10px -20px 10px -20px;
+}
+
+.wpsaio-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.wpsaio-header-logo img {
+    height: 60px;
+    width: auto;
+    display: block
+}
+
+.wpsaio-top-header h1.wpsaio-header-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1d2327;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+.wpsaio-header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding-right: 20px
+}
+
+@media only screen and (max-width: 768px) {
+    .wpsaio-top-header h1.wpsaio-header-title {
+        font-size:16px
+    }
+}
+
+@media only screen and (max-width: 568px) {
+    .wpsaio-top-header {
+        padding:10px 15px
+    }
+
+    .wpsaio-header-left {
+        gap: 8px
+    }
+
+    .wpsaio-header-logo img {
+        height: 28px
+    }
+
+    .wpsaio-header-title {
+        font-size: 14px
+    }
+
+    .wpsaio-header-actions {
+        gap: 12px
+    }
+}
+/* Button */
+.wpsaio-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    transition: all .15s ease;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+    cursor: pointer
+}
+
+.wpsaio-btn,.wpsaio-btn:hover {
+    color: #0f172a;
+    text-decoration: none
+}
+
+.wpsaio-btn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1
+}
+
+.wpsaio-btn:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.1)
+}
+
+.wpsaio-btn:active {
+    transform: scale(.98)
+}
+
+.wpsaio-btn-xs {
+    height: 22px;
+    padding: 0 6px;
+    line-height: 22px;
+    font-size: 10px
+}
+
+.wpsaio-btn-sm {
+    height: 28px;
+    font-size: 12px;
+    padding: 0 10px
+}
+
+.wpsaio-btn-lg {
+    height: 40px;
+    font-size: 14px;
+    padding: 0 16px
+}
+
+@media only screen and (max-width: 768px) {
+    .wpsaio-btn {
+        font-size:12px;
+        height: 28px;
+        padding: 0 10px
+    }
+}
+
+@media only screen and (max-width: 568px) {
+    .wpsaio-btn {
+        font-size:11px;
+        height: 26px;
+        padding: 0 8px
+    }
+}
+
+.wpsaio-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    background-color: #2c2c2c;
+    color: #ffffff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 999999;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 0;
+}
+
+.wpsaio-toast-show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.wpsaio-toast-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.wpsaio-toast-message {
+    line-height: 1.5;
+    flex: 1;
+}
+
+.wpsaio-toast-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+}
+
+.wpsaio-toast-close:hover {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.wpsaio-toast-close:active {
+    transform: scale(0.95);
+}
+
+.wpsaio-toast-close svg {
+    display: block;
+}
+
+/* Toast Types */
+.wpsaio-toast-success {
+    background-color: #2c2c2c;
+}
+
+.wpsaio-toast-error {
+    background-color: #dc2626;
+}
+
+.wpsaio-toast-info {
+    background-color: #2563eb;
+}
+
+@media only screen and (max-width: 568px) {
+    .wpsaio-toast {
+        min-width: calc(100% - 40px);
+        max-width: calc(100% - 40px);
+        font-size: 13px;
+        padding: 12px 20px;
+    }
+}
+/* Footer */
+.wpsaio-footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: #f5f5f5;
+    padding: 4px 10px;
+    z-index: 9999;
+    left: auto;
+    border-top: 1px solid #ddd;
+    width: calc(100% - 160px);
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .wpsaio-footer-review-text a {
+    color: #0073aa;
+    text-decoration: none;
+  }
+  
+  .wpsaio-footer-review-text a:hover {
+    color: #00a0d2;
+    text-decoration: none;
+  }
+  
+  /* Responsive */
+  @media only screen and (max-width: 782px) {
+    .wpsaio-footer {
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (min-width: 783px) and (max-width: 960px) {
+    .wpsaio-footer {
+      width: calc(100% - 36px);
+    }
+  }
+  #my-tooltip {
+    z-index: 999999;
+  }
+  /* .wp-saio-svg-icon {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .wp-saio-icon-facebook-messenger .wp-saio-svg-icon {
+    background-image: url(../../home/images/facebook-messenger.svg);
+  }
+  .wp-saio-icon-whatsapp .wp-saio-svg-icon {
+    background-image: url(../../home/images/whatsapp-logo.svg);
+  }
+  .wp-saio-icon-snapchat .wp-saio-svg-icon {
+    background-image: url(../../home/images/snapchat-stroke-none.svg);
+  }
+  .wp-saio-icon-line .wp-saio-svg-icon {
+    background-image: url(../../home/images/line-logo.svg);
+  }
+  .wp-saio-icon-viber .wp-saio-svg-icon {
+    background-image: url(../../home/images/viber.svg);
+  }
+  .wp-saio-icon-phone .wp-saio-svg-icon {
+    background-image: url(../../home/images/phone-receiver.svg);
+  }
+  .wp-saio-icon-email .wp-saio-svg-icon {
+    background-image: url(../../home/images/close-envelope.svg);
+  }
+  .wp-saio-icon-telegram .wp-saio-svg-icon {
+    background-image: url(../../home/images/telegram.svg);
+  }
+  .wp-saio-icon-zalo .wp-saio-svg-icon {
+    background-image: url(../../home/images/zalo.svg);
+  }
+  .wp-saio-icon-kakaotalk .wp-saio-svg-icon {
+    background-image: url(../../home/images/kakaotalk.svg);
+  }
+  .wp-saio-icon-wechat .wp-saio-svg-icon {
+    background-image: url(../../home/images/wechat.svg);
+  }
+  .wp-saio-icon-custom-app .wp-saio-svg-icon {
+    background-image: url(../../home/images/custom-app.svg);
+  } */

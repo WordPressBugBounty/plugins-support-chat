@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 $showOnDesktop = esc_attr(get_option('wpsaio_show_on_desktop', 1));
 
 $showOnMobile = esc_attr(get_option('wpsaio_show_on_mobile', 1));
@@ -15,10 +15,10 @@ $getPagesQuery = new \WP_Query(array("posts_per_page" => -1, "post_type" => "pag
 ?>
 <div class="wrap-content-box">
     <table class="form-table">
-        <p><?php echo __('Setting text and style for the floating widget.', 'support-chat') ?></p>
+        <p><?php echo esc_html__('Setting text and style for the floating widget.', 'support-chat') ?></p>
         <tbody>
             <tr>
-                <th scope="row"><label for="wpsaio-show-desktop-switch"><?php echo __('Show on desktop', 'support-chat') ?></label></th>
+                <th scope="row"><label for="wpsaio-show-desktop-switch"><?php echo esc_html__('Show on desktop', 'support-chat') ?></label></th>
                 <td>
                     <div class="wpsaio-switch-control">
                         <input type="checkbox" id="wpsaio-show-desktop-switch" value="1" name="showOnDesktop" <?php checked($showOnDesktop, 1) ?>>
@@ -27,7 +27,7 @@ $getPagesQuery = new \WP_Query(array("posts_per_page" => -1, "post_type" => "pag
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="wpsaio-show-mobile-switch"><?php echo __('Show on mobile', 'support-chat') ?></label></th>
+                <th scope="row"><label for="wpsaio-show-mobile-switch"><?php echo esc_html__('Show on mobile', 'support-chat') ?></label></th>
                 <td>
                     <div class="wpsaio-switch-control">
                         <input type="checkbox" id="wpsaio-show-mobile-switch" value="1" name="showOnMobile" <?php checked($showOnMobile, 1) ?>>
@@ -36,20 +36,20 @@ $getPagesQuery = new \WP_Query(array("posts_per_page" => -1, "post_type" => "pag
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="displayCondition"><?php echo __('Display', 'support-chat') ?></label></th>
+                <th scope="row"><label for="displayCondition"><?php echo esc_html__('Display', 'support-chat') ?></label></th>
                 <td>
                     <select name="displayCondition" id="displayCondition">
-                        <option <?php selected($displayCondition, 'allPages'); ?> value="allPages"><?php echo __("Show on all pages", 'support-chat') ?></option>
-                        <option <?php selected($displayCondition, 'includePages'); ?> value="includePages"><?php echo __("Show on these pages...", 'support-chat') ?></option>
-                        <option <?php selected($displayCondition, 'excludePages'); ?> value="excludePages"><?php echo __("Hide on these pages...", 'support-chat') ?></option>
+                        <option <?php selected($displayCondition, 'allPages'); ?> value="allPages"><?php echo esc_html__("Show on all pages", 'support-chat') ?></option>
+                        <option <?php selected($displayCondition, 'includePages'); ?> value="includePages"><?php echo esc_html__("Show on these pages...", 'support-chat') ?></option>
+                        <option <?php selected($displayCondition, 'excludePages'); ?> value="excludePages"><?php echo esc_html__("Hide on these pages...", 'support-chat') ?></option>
                     </select>
-                    <!-- <p class="description"><?php //_e("Please select 'Show on all pages except' if you want to display the widget on WooCommerce pages.", 'support-chat') 
+                    <!-- <p class="description"><?php //esc_html_e("Please select 'Show on all pages except' if you want to display the widget on WooCommerce pages.", 'support-chat') 
                                                 ?></p> -->
                 </td>
             </tr>
             <th scope="row">
                 <!-- <label for="widget_show_on_pages">
-                <?php // echo __('Select pages', 'support-chat') 
+                <?php // echo esc_html__('Select pages', 'support-chat') 
                 ?>
             </label> -->
             </th>
@@ -104,6 +104,6 @@ $getPagesQuery = new \WP_Query(array("posts_per_page" => -1, "post_type" => "pag
         </tbody>
     </table>
     <div class="wp_saio_panel_btn-wrap">
-        <button class="wpsaio-save button button-primary button-display-settings"><?php echo __('Save Changes', 'support-chat') ?><i class="dashicons dashicons-update-alt"></i></button>
+        <button class="wpsaio-save button button-primary button-display-settings"><?php echo esc_html__('Save Changes', 'support-chat') ?><i class="dashicons dashicons-update-alt"></i></button>
     </div>
 </div>

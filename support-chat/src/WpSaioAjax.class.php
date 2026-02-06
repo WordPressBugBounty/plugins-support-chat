@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class WpSaioAjax
 {
@@ -10,6 +10,7 @@ class WpSaioAjax
         add_action('wp_ajax_wpsaio_choose_apps_settings', array($this, 'set_choose_apps_settings'));
         add_action('wp_ajax_wpsaio_design_settings', array($this, 'set_design_settings'));
         add_action('wp_ajax_wpsaio_display_settings', array($this, 'set_display_settings'));
+        add_action('wp_ajax_wpsaio_review_tracked', array($this, 'track_review'));
     }
 
     public static function instance()
@@ -22,13 +23,18 @@ class WpSaioAjax
 
     public function set_choose_apps_settings()
     {
-        if (!wp_verify_nonce($_POST['nonce'], 'wpsaio_nonce')) {
+        $nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'wpsaio_nonce' ) ) {
             die('Permission Denied.');
         }
-
-        $form_data = isset($_POST['data']['formDataArray']) ? WpSaioHelper::sanitize_array($_POST['data']['formDataArray']) : [];
+        //check manage_options capability
+        if (!current_user_can('manage_options')) {
+            die('Permission Denied.');
+        }
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized via WpSaioHelper::sanitize_array()
+        $form_data = isset( $_POST['data']['formDataArray'] ) ? WpSaioHelper::sanitize_array( wp_unslash( $_POST['data']['formDataArray'] ) ) : [];
         $data = [];
-
+        
         foreach ($form_data as $app) {
             $data[$app['name']]['params'] = [
                 $app['key'] => $app['value'],
@@ -58,33 +64,38 @@ class WpSaioAjax
                 unset($default_apps[$default_app_key]);
             }
         }
+        // print_r(array_merge($default_apps, $custom_apps));
 
         update_option('njt_wp_saio_default_apps', array_merge($default_apps, $custom_apps));
-
         update_option('njt_wp_saio', $data);
         return true;
     }
 
     public function set_design_settings()
     {
-        if (!wp_verify_nonce($_POST['nonce'], 'wpsaio_nonce')) {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if (!wp_verify_nonce( $nonce, 'wpsaio_nonce')) {
+            die('Permission Denied.');
+        }
+        //check manage_options capability
+        if (!current_user_can('manage_options')) {
             die('Permission Denied.');
         }
 
-        $enable_plugin = sanitize_text_field($_POST['data']['enablePlugin']);
-        $style = sanitize_text_field($_POST['data']['style']);
-        $tooltip = sanitize_text_field($_POST['data']['toolTip']);
-        $widget_position = sanitize_text_field($_POST['data']['widgetPosition']);
-        $padding_from_bottom = sanitize_text_field($_POST['data']['paddingFromBottom']);
-        $button_icon = sanitize_text_field($_POST['data']['buttonIcon']);
-        $button_image = sanitize_text_field($_POST['data']['buttonImage']);
-        $button_color = sanitize_text_field($_POST['data']['buttonColor']);
+        $enable_plugin = isset( $_POST['data']['enablePlugin'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['enablePlugin'] ) ) : '';
+        $style = isset( $_POST['data']['style'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['style'] ) ) : '';
+        $tooltip = isset( $_POST['data']['tooltip'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['tooltip'] ) ) : '';
+        $widget_position = isset( $_POST['data']['widgetPosition'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['widgetPosition'] ) ) : '';
+        $bottom_distance = isset( $_POST['data']['bottomDistance'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['bottomDistance'] ) ) : '';
+        $button_icon = isset( $_POST['data']['buttonIcon'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['buttonIcon'] ) ) : '';
+        $button_image = isset( $_POST['data']['buttonImage'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['buttonImage'] ) ) : '';
+        $button_color = isset( $_POST['data']['buttonColor'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['buttonColor'] ) ) : '';
 
         update_option('wpsaio_enable_plugin', $enable_plugin);
         update_option('wpsaio_style', $style);
         update_option('wpsaio_tooltip', $tooltip);
         update_option('wpsaio_widget_position', $widget_position);
-        update_option('wpsaio_bottom_distance', $padding_from_bottom);
+        update_option('wpsaio_bottom_distance', $bottom_distance);
         update_option('wpsaio_button_icon', $button_icon);
         update_option('wpsaio_button_image', $button_image);
         update_option('wpsaio_button_color', $button_color);
@@ -94,15 +105,29 @@ class WpSaioAjax
 
     public function set_display_settings()
     {
-        if (!wp_verify_nonce($_POST['nonce'], 'wpsaio_nonce')) {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if (!wp_verify_nonce( $nonce, 'wpsaio_nonce')) {
+            die('Permission Denied.');
+        }
+        //check manage_options capability
+        if (!current_user_can('manage_options')) {
             die('Permission Denied.');
         }
 
-        $show_on_desktop = sanitize_text_field($_POST['data']['showOnDesktop']);
-        $show_on_mobile = sanitize_text_field($_POST['data']['showOnMobile']);
-        $display_condition = sanitize_text_field($_POST['data']['displayCondition']);
-        $includes_pages = isset($_POST['data']['includesPagesArray']) ? WpSaioHelper::sanitize_array($_POST['data']['includesPagesArray']) : [];
-        $excludes_pages = isset($_POST['data']['excludesPagesArray']) ? WpSaioHelper::sanitize_array($_POST['data']['excludesPagesArray']) : [];
+        $show_on_desktop = isset( $_POST['data']['showOnDesktop'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['showOnDesktop'] ) ) : '';
+        $show_on_mobile = isset( $_POST['data']['showOnMobile'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['showOnMobile'] ) ) : '';
+        $display_condition = isset( $_POST['data']['displayCondition'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['displayCondition'] ) ) : '';
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized via WpSaioHelper::sanitize_array()
+        $includes_pages = isset( $_POST['data']['includePages'] ) ? WpSaioHelper::sanitize_array( wp_unslash( $_POST['data']['includePages'] ) ) : [];
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized via WpSaioHelper::sanitize_array()
+        $excludes_pages = isset( $_POST['data']['excludePages'] ) ? WpSaioHelper::sanitize_array( wp_unslash( $_POST['data']['excludePages'] ) ) : [];
+
+        if( ! is_array($includes_pages) ) {
+            $includes_pages = explode(',', $includes_pages);
+        }
+        if( ! is_array($excludes_pages) ) {
+            $excludes_pages = explode(',', $excludes_pages);
+        }
 
         update_option('wpsaio_show_on_desktop', $show_on_desktop);
         update_option('wpsaio_show_on_mobile', $show_on_mobile);
@@ -110,6 +135,15 @@ class WpSaioAjax
         update_option('wpsaio_includes_pages', $includes_pages);
         update_option('wpsaio_excludes_pages', $excludes_pages);
 
+        return true;
+    }
+    public function track_review()
+    {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if (!wp_verify_nonce( $nonce, 'wpsaio_nonce')) {
+            die('Permission Denied.');
+        }
+        update_option('wpsaio_review_tracked', '1');
         return true;
     }
 }

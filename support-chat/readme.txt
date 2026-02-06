@@ -1,10 +1,10 @@
-=== Click to Chat - WP Support All-in-One Floating Widget ===
+=== WP Click to Chat – Email, Live Chat, Call & Book Now Buttons ===
 Contributors: ninjateam
 Donate link: https://ninjateam.org/donation/
-Tags: chat, sticky button, whatsapp, contact, communication
+Tags: chat, sticky button, whatsapp, contact, chat widget
 Requires at least: 3.0
 Tested up to: 6.8
-Stable tag: 2.3.4
+Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -113,6 +113,18 @@ You’re done. Enjoy!
 4. WP click-to-chat floating button on mobile screen
 
 == Changelog ==
+
+Nov 04, 2025 - Version 2.3.6
+* Improved: Refactor to ReacjJS version
+* Improved: UI
+* Fixed: Small issues
+
+Oct 16, 2025 - Version 2.3.5
+* Added: Navigation header
+* Improved: Security
+* Improved: Toast alert
+* Removed: DetectMobile Class (now using built in WP functions)
+* Fixed: Phone, Zalo, WhatsApp link, etc. not working (popup, redirect)
 
 Oct 16, 2024 - Version 2.3.4
 * Fixed: Security
