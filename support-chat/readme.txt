@@ -3,7 +3,7 @@ Contributors: ninjateam
 Donate link: https://ninjateam.org/donation/
 Tags: chat, sticky button, whatsapp, contact, chat widget
 Requires at least: 3.0
-Tested up to: 6.8
+Tested up to: 7.0
 Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
